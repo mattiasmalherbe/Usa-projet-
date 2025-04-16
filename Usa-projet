@@ -1,0 +1,105 @@
+// Début du code du site complet pour le projet USA (React + TailwindCSS)
+import { useState } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
+export default function USAProjetApp() {
+  const [connected, setConnected] = useState(true); // Simule une session déjà active
+  const [completed, setCompleted] = useState<string[]>([]);
+  const [question, setQuestion] = useState("");
+  const steps = [
+    "Choisir un community college",
+    "Recevoir le I-20",
+    "Payer SEVIS",
+    "Remplir le DS-160",
+    "Prendre RDV à l’ambassade",
+    "Trouver un logement",
+    "Préparer les documents",
+    "Obtenir le visa F-1"
+  ];
+
+  const toggleStep = (step: string) => {
+    setCompleted((prev) =>
+      prev.includes(step) ? prev.filter((s) => s !== step) : [...prev, step]
+    );
+  };
+
+  if (!connected) {
+    return (
+      <div className="p-10 max-w-md mx-auto">
+        <h1 className="text-2xl font-bold mb-4">Connexion</h1>
+        <Input placeholder="Adresse e-mail" className="mb-2" />
+        <Input type="password" placeholder="Mot de passe" className="mb-4" />
+        <Button onClick={() => setConnected(true)}>Se connecter</Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto space-y-6">
+      <h1 className="text-3xl font-bold">Mon Projet USA</h1>
+      <Tabs defaultValue="infos">
+        <TabsList className="space-x-2">
+          <TabsTrigger value="infos">Informations</TabsTrigger>
+          <TabsTrigger value="suivi">Suivi</TabsTrigger>
+          <TabsTrigger value="documents">Documents</TabsTrigger>
+          <TabsTrigger value="chat">Assistance</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="infos">
+          <Card><CardContent className="p-4 space-y-2">
+            <h2 className="text-lg font-semibold">Visa F-1 et Démarches</h2>
+            <ul className="list-disc pl-5 space-y-1 text-sm">
+              <li>Recevoir l’admission + I-20 du collège</li>
+              <li>Payer les frais SEVIS (350 $)</li>
+              <li>Remplir le formulaire DS-160</li>
+              <li>Prendre RDV à l’ambassade + entretien</li>
+              <li>Prévoir logement, assurance, etc.</li>
+            </ul>
+          </CardContent></Card>
+        </TabsContent>
+
+        <TabsContent value="suivi">
+          <Card><CardContent className="p-4">
+            <h2 className="text-lg font-semibold mb-2">Étapes</h2>
+            <ul className="space-y-1">
+              {steps.map((s) => (
+                <li key={s} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={completed.includes(s)}
+                    onChange={() => toggleStep(s)}
+                  />
+                  <span className={completed.includes(s) ? "line-through" : ""}>{s}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent></Card>
+        </TabsContent>
+
+        <TabsContent value="documents">
+          <Card><CardContent className="p-4 space-y-2">
+            <h2 className="text-lg font-semibold">Espace documents</h2>
+            <p className="text-sm">Ajoute ici tes fichiers importants (I-20, DS-160, attestations...)</p>
+            <Input type="file" />
+          </CardContent></Card>
+        </TabsContent>
+
+        <TabsContent value="chat">
+          <Card><CardContent className="p-4 space-y-2">
+            <h2 className="text-lg font-semibold">Pose ta question</h2>
+            <Textarea
+              placeholder="Ex: Que faut-il pour l’entretien d’ambassade ?"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+            />
+            <Button onClick={() => alert("Je suis là pour répondre !")}>Envoyer</Button>
+          </CardContent></Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
